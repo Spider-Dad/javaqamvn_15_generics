@@ -1,4 +1,5 @@
 package ru.netology.javaqa;
+
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -12,25 +13,46 @@ public class AviaSoulsTest {
     public void setUp() {
         aviaSouls = new AviaSouls();
         aviaSouls.add(new Ticket("Москва", "Санкт-Петербург", 400, 10, 11));
-        aviaSouls.add(new Ticket("Сочи", "Челябинск", 300, 14, 17));
+        aviaSouls.add(new Ticket("Санкт-Петербург", "Париж", 300, 14, 17));
         aviaSouls.add(new Ticket("Екатеринбург", "Казань", 500, 12, 16));
         aviaSouls.add(new Ticket("Самара", "Астана", 200, 16, 18));
+        aviaSouls.add(new Ticket("Самара", "Астана", 300, 18, 20));
         aviaSouls.add(new Ticket("Москва", "Воронеж", 400, 20, 23));
     }
 
     @Test
     public void searchByRouteTest() { // Проверяем работу метода search, ищем билеты по маршруту
         Ticket[] expected = {
-                new Ticket("Самара", "Астана", 200, 16, 18)
+                new Ticket("Москва", "Воронеж", 400, 20, 23)
         };
-        Ticket[] result = aviaSouls.search("Самара", "Астана");
+        Ticket[] result = aviaSouls.search("Москва", "Воронеж");
         Assertions.assertArrayEquals(expected, result);
+    }
+
+    @Test
+    public void searchNoTicketsTest() { // Проверяем работу метода search, когда не найдено ни одного билета
+        Ticket[] expected = {};
+        Ticket[] result = aviaSouls.search("Москва", "Париж");
+        Assertions.assertArrayEquals(expected, result);
+    }
+
+    @Test
+    public void searchTicketsMoreOneTest() {  // Проверяем работу метода search, когда находим несколько билетов
+        Ticket ticket1 = new Ticket("Самара", "Астана", 200, 16, 18);
+        Ticket ticket2 = new Ticket("Самара", "Астана", 300, 18, 20);
+
+        Ticket[] expected = {ticket1, ticket2};
+        Ticket[] result = aviaSouls.search("Самара", "Астана");
+
+        Assertions.assertArrayEquals(expected, result);
+
     }
 
     @Test
     public void searchAndSortByPriceTest() { // Проверяем метод searchAndSortBy с параметром компаратора по умолчанию (сортировка по возрастанию цены билета)
         Ticket[] expected = {
                 new Ticket("Самара", "Астана", 200, 16, 18),
+                new Ticket("Самара", "Астана", 300, 18, 20)
         };
         Ticket[] result = aviaSouls.searchAndSortBy("Самара", "Астана", null);
         Assertions.assertArrayEquals(expected, result);
